@@ -56,10 +56,7 @@ def main():
     cameraON = cv2.VideoCapture(0)
     print(cameraON)
     color = getColor()
-    #Mat cameraFeed #to store each frame of webcam feed
-    #Mat HSV # store HSV img
-    #Mat threshold # store binary threshold img
-    x = y = 0 #x and y value of the location of the object
+    
     #createTrackbars()
     while(1):
         _, frame = cameraON.read()
