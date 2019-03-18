@@ -39,27 +39,13 @@ def createTrackbars():
             img[:] = [b, g, r]
     cv2.destroyAllWindows()
 
-def main():
-    #declare variables
+def detectColor(frame, color):
+
     Red = ([17, 15, 100], [50, 56, 200]) # lower, upper
     Blue = ([86, 31, 4], [220, 88, 50])
     Yellow = ([25, 146, 190], [62, 174, 250])
-    Green = ([47, 61, 60], [80, 255, 255])
-
-    Frame_H = 480
-    Frame_W = 640
-    maxNumObj = 50
-    minObjArea = 20 * 20
-    maxObjArea = Frame_H * Frame_W /1.5
-    trackObjects = False
-    useMorphOps = False
-    cameraON = cv2.VideoCapture(0)
-    print(cameraON)
-    color = getColor()
-    
-    #createTrackbars()
+    Green = ([29, 86, 6], [64, 255, 255])
     while(1):
-        _, frame = cameraON.read()
         frame_HSV = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
         if(color == 'red'):
             mask = cv2.inRange(frame, np.array(Red[0], "uint8"), np.array(Red[1], "uint8"))#find the color within the boundaries
@@ -71,13 +57,47 @@ def main():
             mask = cv2.inRange(frame, np.array([65,60,60]), np.array([80,255,255]))
         output = cv2.bitwise_and(frame, frame, mask = mask)
 
-        #show the image
+            #show the image
         cv2.imshow("frame", frame) #hstack: Stack arrays in sequence horizontally (column wise).
         cv2.imshow("mask", mask)
         cv2.imshow("Output", output)
+
         k = cv2.waitKey(1) & 0xFF #Waits for a pressed key. returns the code of the pressed key or -1 if no key was pressed before the specified time had elapsed.
         if k == 27: #esc is pressed
             break
+    cv2.destroyAllWindows()
+
+
+
+def main():
+    #declare variables
+
+
+    Frame_H = 480
+    Frame_W = 640
+    maxNumObj = 50
+    minObjArea = 20 * 20
+    maxObjArea = Frame_H * Frame_W /1.5
+    trackObjects = False
+    useMorphOps = False
+    cameraON = cv2.VideoCapture(0)
+    print(cameraON)
+    color = getColor()
+
+    #createTrackbars()
+
+    _, frame = cameraON.read()
+    detectColor(frame, color)
+    #grayframe = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)#findContour()can only work with grayscale img
+    #ret, thresh = cv2.threshold(grayframe, 0, 255, 0)#(src, thresh, maxval, type[, dst])
+    #contours, hierachy = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE) #(image, mode, method[, contours[, hierarchy[, offset]]])
+    #cnt = contours[0]
+    #M = cv2.moments(cnt)
+    #print(M)
+
+    #***************************************************************
+
+    #cameraON.release()
     return 0;
 
 main()
