@@ -37,7 +37,7 @@ while cap.read():
     res = cv2.bitwise_and (frame, frame, mask = mask)   #final result
 
     #draws the boxes around detect color
-    _, contours, _= cv2.findContours (maskRed, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
+    _, contours = cv2.findContours (maskRed, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
     for pic, cont in enumerate(contours):
         area = cv2.contourArea (cont)
         if (area > 300):
