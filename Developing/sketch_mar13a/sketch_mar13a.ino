@@ -1,138 +1,145 @@
 int data; //python input
-int trigPin = 11;//utrosonic sensor
-int echoPin = 13;//utrosonic sensor
+
 int motor1p = 8;
 int motor1n = 9;
 int motor2p = 10;
 int motor2n = 11;
-long distance;
+int pwm1 = 5;
+int pwm2 = 6;
 
-long getDistance(int data, int trigPin, int echoPin){
-  long duration, cm, inches;
-  if(data == 48){//when input is 0, somehow arduino shows 48
-     digitalWrite(trigPin, LOW);
-     delayMicroseconds(5);
-     digitalWrite(trigPin, HIGH);
-     delayMicroseconds(10);
-     digitalWrite(trigPin, LOW);
-
-     pinMode(echoPin, INPUT);
-     duration = pulseIn(echoPin, HIGH);
-
-     //cm = (duration/2) / 29.1;
-     inches = (duration/2) / 74;
-  }
- 
-  return inches;
-}
-
-//return true when an object is within 3 inches
-bool withinDistance(long d){
-  long inches = 3;
-  bool result;
-    if(d < inches){
-      result = true;
-    }   
-    else{
-      result = false;
-    }
-    return result;
-}
-
-
-void move(char input){
+void move(int input){
   long runTime =millis();
-  int endTime = 5000;
-  //Serial.print(input);
-  if (input=='forward')
+  int endTime = runTime +10;
+  int speed;
+  int tempSpeed = 100; //full speed
+  delay(200);
+  Serial.print("  ");
+  Serial.print(input);
+  Serial.print("  ");
+  if (input== 49)
   { 
-    //runTime <= endTime
+    speed = map(tempSpeed/4, 0, 100, 0, 255);
+    Serial.print("Speed");
+    Serial.print(speed);
+    endTime = runTime +50;
     while(runTime<endTime){
       Serial.print("forward");
       digitalWrite(motor1p, HIGH);
       digitalWrite(motor1n, LOW);
       digitalWrite(motor2p, HIGH);
       digitalWrite(motor2n, LOW);
+      analogWrite(pwm1, speed);
+      analogWrite(pwm2, speed);
       runTime ++;
+
     }
+    delay(200);
+
+
 
   }
-  if (input=='right')
+  if (input== 50)
   { 
-    //runTime <= endTime
+
+    speed = map(tempSpeed/5, 0, 100, 0, 255);
+    endTime = runTime +70;
     while(runTime<endTime){
       Serial.print("right");
-      digitalWrite(motor1p, HIGH);
-      digitalWrite(motor1n, LOW);
-      digitalWrite(motor2p, LOW);
-      digitalWrite(motor2n, HIGH);
+      digitalWrite(motor1p, LOW);
+      digitalWrite(motor1n, HIGH);
+      digitalWrite(motor2p, HIGH);
+      digitalWrite(motor2n, LOW);
+      analogWrite(pwm1, speed);
+      analogWrite(pwm2, speed);
       runTime ++;
+      
     }
+    
+
 
   }
-  if (input=='backward')
+  if (input== 51)
   { 
     //runTime <= endTime
+    speed = map(tempSpeed/4, 0, 100, 0, 255);
     while(runTime<endTime){
       Serial.print("backward");
       digitalWrite(motor1p, LOW);
       digitalWrite(motor1n, HIGH);
       digitalWrite(motor2p, LOW);
       digitalWrite(motor2n, HIGH);
+      analogWrite(pwm1, speed);
+      analogWrite(pwm2, speed);
       runTime ++;
     }
+    delay(200);
 
   }
-  if (input=='left')
+  if (input== 52)
   { 
     //runTime <= endTime
+    speed = map(tempSpeed/5, 0, 100, 0, 255);
+    endTime = runTime +70;
     while(runTime<endTime){
       Serial.print("left");
-      digitalWrite(motor1p, LOW);
-      digitalWrite(motor1n, HIGH);
-      digitalWrite(motor2p, HIGH);
-      digitalWrite(motor2n, LOW);
+
+      digitalWrite(motor1p, HIGH);
+      digitalWrite(motor1n, LOW);
+      digitalWrite(motor2p, LOW);
+      digitalWrite(motor2n, HIGH);
+      analogWrite(pwm1, speed);
+      analogWrite(pwm2, speed);
       runTime ++;
     }
 
+    
+    delay(200);
+
   }
 
+}
+
+void stop(){
+  Serial.print("Halt!!!");
+  digitalWrite(motor1p, LOW);
+  digitalWrite(motor1n, LOW);
+  digitalWrite(motor2p, LOW);
+  digitalWrite(motor2n, LOW);
 }
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(9600);
-  pinMode(trigPin, OUTPUT);
-  pinMode(echoPin, INPUT);
+  pinMode(pwm1, OUTPUT);
+  pinMode(pwm2, OUTPUT);
 
   //motor
-  pinMode(motorPin1, OUTPUT);
-  pinMode(motorPin2, OUTPUT);
-  pinMode(motorPin3, OUTPUT);
-  pinMode(motorPin4, OUTPUT);
+  pinMode(motor1p, OUTPUT);
+  pinMode(motor1n, OUTPUT);
+  pinMode(motor2p, OUTPUT);
+  pinMode(motor2n, OUTPUT);
 
-  digitalWrite(motorPin1, LOW);
-  digitalWrite(motorPin2, LOW);
-  digitalWrite(motorPin3, LOW);
-  digitalWrite(motorPin4, LOW);
+  digitalWrite(motor1p, LOW);
+  digitalWrite(motor1n, LOW);
+  digitalWrite(motor2p, LOW);
+  digitalWrite(motor2n, LOW);
 }
 
 void loop() {
-/*for connecting pi
-  a++;                          // a value increase every loop
-  sprintf(dataString,"%02X",a); // convert a value to hexa 
-  Serial.println(dataString);   // send the data
+
+  int input = Serial.read();
+  
+  move(49); //forward
   delay(1000);
-  */
- 
-  /*
-  while(Serial.available()){
-    data = Serial.read(); //Get the input from python   
-    distance = getDistance(data, trigPin, echoPin);
-    Serial.print(distance);   
-  }
-  */
-  move(Serial.read());
-  delay(20);
+  move(50); //right
+  delay(400);
+  move(49);
+ // delay(400);
+  //move(52); //left
+  delay(200);
+  //move(51); //back
+  
+  stop();
+  delay(10000);
   
   
 }

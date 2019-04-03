@@ -111,16 +111,16 @@ def setInitPosition():
     return robot
 
 def turnRight(arduino, robot):
-    arduino.write('right')
+    arduino.write('50')
     robot.position[0] + 1 #move 1 inch right
 def turnLeft(arduino, robot):
-    arduino.write('left')
+    arduino.write('52')
     robot.position[0] - 1 #move 1 inch left
 def forward(arduino, robot):
-    arduino.write('forward')
+    arduino.write('49')
     robot.position[1] + 1 #move 1 inch forward
 def backward(arduino, robot):
-    arduino.write('backward')
+    arduino.write('51')
     robot.position[1] - 1 #move 1 inch backward
     
 
